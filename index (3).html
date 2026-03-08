@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Elite Skin Protocol</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Jost:wght@300;400;500;600&display=swap');
+
+:root {
+  --gold: #c9a96e;
+  --gold-light: #e8d5b0;
+  --gold-pale: #fdf6ec;
+  --dark: #1a1410;
+  --mid: #5c4a3a;
+  --soft: #8c7560;
+  --cream: #faf7f2;
+  --white: #ffffff;
+  --tret: #9b5a8a;
+  --tret-bg: #f5eaf3;
+  --device-bg: #eaf0f5;
+  --device: #4a7a9b;
+  --acid-bg: #eaf5f0;
+  --acid: #3a8a6a;
+  --wait-bg: #fdf3e7;
+  --wait: #c87941;
+  --key-bg: #f5f0ea;
+  --key: #8a6a3a;
+  --req-bg: #fff0e0;
+  --req: #b06020;
+  --cluster-bg: #e8f0ea;
+  --cluster: #3a6a4a;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* STATUS BAR AREA */
+.status-bar {
+  height: calc(44px + var(--safe-top));
+  background: var(--dark);
+  padding-top: var(--safe-top);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+.status-time {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+/* HEADER */
+.app-header {
+  background: linear-gradient(160deg, #1a1410 0%, #3d2e22 100%);
+  padding: 20px 24px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.app-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(201,169,110,.12), transparent 70%);
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  position: relative;
+}
+.header-greeting {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.8;
+}
+.header-print-btn {
+  background: rgba(201,169,110,0.15);
+  border: 1px solid rgba(201,169,110,0.3);
+  color: var(--gold);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Jost', sans-serif;
+}
+.header-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--white);
+  line-height: 1.1;
+  position: relative;
+}
+.header-title span { color: var(--gold); font-style: italic; }
+.header-day-strip {
+  display: flex;
+  gap: 6px;
+  margin-top: 16px;
+  position: relative;
+}
+.day-pill {
+  flex: 1;
+  text-align: center;
+  padding: 8px 4px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid transparent;
+}
+.day-pill.active {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.day-pill-name {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  display: block;
+  margin-bottom: 2px;
+}
+.day-pill.active .day-pill-name { color: var(--dark); }
+.day-pill-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  margin: 0 auto;
+}
+.day-pill.active .day-pill-dot { background: var(--dark); }
+.day-pill.has-tret .day-pill-dot { background: #c9a5d4; }
+.day-pill.has-acid .day-pill-dot { background: #a5d4c9; }
+.day-pill.has-led .day-pill-dot { background: #d4a5c4; }
+.day-pill.active.has-tret .day-pill-dot,
+.day-pill.active.has-acid .day-pill-dot,
+.day-pill.active.has-led .day-pill-dot { background: var(--dark); }
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: var(--white);
+  border-top: 1px solid var(--gold-light);
+  display: flex;
+  padding-bottom: var(--safe-bottom);
+  z-index: 100;
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0 8px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-family: 'Jost', sans-serif;
+}
+.nav-icon { font-size: 20px; margin-bottom: 3px; }
+.nav-label {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--soft);
+  font-weight: 500;
+}
+.nav-item.active .nav-label { color: var(--dark); }
+.nav-item.active .nav-icon { filter: none; }
+
+/* MAIN SCROLL AREA */
+.scroll-area {
+  padding: 20px 16px 120px;
+  min-height: calc(100vh - 300px);
+}
+
+/* SCREENS */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* TODAY CARD */
+.today-card {
+  background: var(--white);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 20px rgba(26,20,16,0.06);
+}
+.today-card-header {
+  background: linear-gradient(135deg, var(--gold-pale), #fff8f0);
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.today-card-title {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+}
+.today-card-theme {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: var(--dark);
+  font-weight: 400;
+}
+
+/* STEP CARDS */
+.step-list { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.step-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--cream);
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+.step-card.done {
+  background: #f0f5f0;
+  border-color: #c5dcc5;
+  opacity: 0.7;
+}
+.step-card.done .step-name { text-decoration: line-through; color: var(--soft); }
+.step-check {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--gold-light);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  transition: all 0.2s;
+  background: var(--white);
+}
+.step-card.done .step-check {
+  background: #4a8a4a;
+  border-color: #4a8a4a;
+  color: white;
+}
+.step-check-inner { font-size: 12px; display: none; }
+.step-card.done .step-check-inner { display: block; }
+.step-num-inner {
+  font-size: 10px;
+  color: var(--gold);
+  font-weight: 500;
+}
+.step-card.done .step-num-inner { display: none; }
+.step-content { flex: 1; }
+.step-name { font-size: 13px; font-weight: 500; color: var(--dark); margin-bottom: 2px; line-height: 1.3; }
+.step-note { font-size: 11px; color: var(--soft); line-height: 1.5; font-weight: 300; }
+.step-tag {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  font-weight: 500;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+.tag-tret { background: var(--tret-bg); color: var(--tret); }
+.tag-device { background: var(--device-bg); color: var(--device); }
+.tag-wait { background: var(--wait-bg); color: var(--wait); }
+.tag-key { background: var(--key-bg); color: var(--key); }
+.tag-req { background: var(--req-bg); color: var(--req); }
+.tag-acid { background: var(--acid-bg); color: var(--acid); }
+.tag-cluster { background: var(--cluster-bg); color: var(--cluster); }
+
+/* TIMER CARD */
+.timer-card {
+  background: linear-gradient(135deg, #2a1f3d, #1a1410);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 8px 12px;
+  text-align: center;
+  border: 1px solid rgba(201,169,110,0.2);
+}
+.timer-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.timer-display {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: var(--white);
+  letter-spacing: 2px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.timer-subtitle { font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+.timer-btns { display: flex; gap: 10px; justify-content: center; }
+.timer-btn {
+  padding: 10px 24px;
+  border-radius: 30px;
+  border: none;
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.timer-btn-start { background: var(--gold); color: var(--dark); }
+.timer-btn-reset { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+.timer-btn:active { transform: scale(0.96); }
+.timer-select {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.timer-opt {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(201,169,110,0.3);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  font-family: 'Jost', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.timer-opt.active { background: rgba(201,169,110,0.2); color: var(--gold); border-color: var(--gold); }
+.timer-ring { margin: 0 auto 12px; position: relative; width: 120px; height: 120px; }
+.timer-ring svg { transform: rotate(-90deg); }
+.timer-ring-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.timer-ring-mins { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: white; line-height: 1; }
+.timer-ring-sec { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; }
+
+/* SECTION HEADERS */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 4px;
+  margin-bottom: 10px;
+  margin-top: 8px;
+}
+.section-header-line { flex: 1; height: 1px; background: var(--gold-light); }
+.section-header-text { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); }
+
+/* QUICK INFO CARDS */
+.info-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.info-card {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 2px 10px rgba(26,20,16,0.04);
+}
+.info-icon { font-size: 20px; margin-bottom: 6px; }
+.info-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--soft); margin-bottom: 2px; }
+.info-value { font-size: 13px; font-weight: 500; color: var(--dark); }
+
+/* CLUSTERS SCREEN */
+.cluster-card-app {
+  background: var(--white);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 10px rgba(26,20,16,0.04);
+}
+.cluster-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--gold-pale);
+  border-bottom: 1px solid var(--gold-light);
+}
+.cluster-emoji { font-size: 22px; }
+.cluster-head-title { font-size: 13px; font-weight: 500; color: var(--dark); }
+.cluster-head-sub { font-size: 11px; color: var(--soft); font-weight: 300; }
+.cluster-body-app { padding: 14px 16px; }
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gold-pale);
+}
+.product-row:last-child { border-bottom: none; }
+.product-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.product-indicator.open { background: var(--gold); }
+.product-indicator.next { background: var(--gold-light); }
+.product-row-name { font-size: 12px; color: var(--dark); flex: 1; }
+.product-row-status {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+.product-row-status.open { color: var(--gold); font-weight: 500; }
+.cluster-note { font-size: 11px; color: var(--soft); line-height: 1.6; margin-top: 10px; font-style: italic; }
+
+/* UNIQUE PRODUCTS SCREEN */
+.unique-list { display: flex; flex-direction: column; gap: 8px; }
+.unique-item {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  box-shadow: 0 1px 6px rgba(26,20,16,0.04);
+}
+.unique-dot-app {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.unique-name-app { font-size: 13px; font-weight: 500; color: var(--dark); margin-bottom: 3px; }
+.unique-why-app { font-size: 11px; color: var(--soft); line-height: 1.5; font-weight: 300; }
+
+/* RULES SCREEN */
+.rule-card-app {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 6px rgba(26,20,16,0.04);
+}
+.rule-card-app h4 {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.rule-card-app li, .rule-card-app p {
+  font-size: 12px;
+  color: var(--soft);
+  line-height: 1.7;
+}
+.rule-card-app ul { padding-left: 14px; }
+
+/* CONFLICT BADGE */
+.conflict-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gold-pale);
+  font-size: 12px;
+  color: var(--mid);
+  line-height: 1.5;
+}
+.conflict-row:last-child { border-bottom: none; }
+.conflict-x { color: #c04040; font-weight: 600; flex-shrink: 0; }
+
+/* ALERT BOX */
+.app-alert {
+  background: linear-gradient(135deg, var(--gold-pale), #fff8f0);
+  border: 1px solid var(--gold-light);
+  border-left: 3px solid var(--gold);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--mid);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.app-alert strong { color: var(--dark); font-weight: 500; }
+
+/* AM/PM TOGGLE */
+.ampm-toggle {
+  display: flex;
+  background: var(--white);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 6px rgba(26,20,16,0.06);
+}
+.ampm-btn {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  border-radius: 9px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--soft);
+  transition: all 0.2s;
+}
+.ampm-btn.active {
+  background: var(--dark);
+  color: var(--gold);
+}
+
+/* PROGRESS BAR */
+.progress-bar-wrap {
+  background: var(--gold-pale);
+  border-radius: 10px;
+  height: 6px;
+  margin: 0 12px 12px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), #e8c080);
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+.progress-label {
+  font-size: 10px;
+  color: var(--soft);
+  text-align: right;
+  padding: 0 12px;
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+
+/* PRINT STYLES */
+@media print {
+  .bottom-nav, .status-bar, .app-header, .ampm-toggle, .step-check, .timer-card, .no-print { display: none !important; }
+  body { max-width: 100%; font-size: 12px; }
+  .screen { display: block !important; }
+  .scroll-area { padding: 10px; }
+  .step-card { break-inside: avoid; border: 1px solid #ddd; margin-bottom: 6px; }
+  .today-card { break-inside: avoid; }
+  h1, h2, h3 { color: #1a1410; }
+}
+
+/* COMPLETE ALL BTN */
+.complete-btn {
+  width: calc(100% - 24px);
+  margin: 0 12px 12px;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--dark), #3d2e22);
+  border: none;
+  border-radius: 14px;
+  color: var(--gold);
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.complete-btn:active { transform: scale(0.98); }
+
+/* CELEBRATION */
+.celebrate {
+  text-align: center;
+  padding: 20px;
+  display: none;
+}
+.celebrate.show { display: block; }
+.celebrate-emoji { font-size: 48px; margin-bottom: 10px; }
+.celebrate-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--dark); }
+.celebrate-sub { font-size: 12px; color: var(--soft); margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div class="status-time" id="statusTime">9:41 AM</div>
+</div>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="header-top">
+    <div class="header-greeting">✦ Your Protocol</div>
+    <button class="header-print-btn no-print" onclick="window.print()">⎙ Print</button>
+  </div>
+  <div class="header-title">Elite <span>Skin</span> Protocol</div>
+  <div class="header-day-strip" id="dayStrip"></div>
+</div>
+
+<!-- SCREENS -->
+<div class="scroll-area">
+
+  <!-- TODAY SCREEN -->
+  <div class="screen active" id="screen-today">
+    <div class="ampm-toggle no-print">
+      <button class="ampm-btn active" id="amBtn" onclick="switchAMPM('am')">☀️ Morning</button>
+      <button class="ampm-btn" id="pmBtn" onclick="switchAMPM('pm')">🌙 Evening</button>
+    </div>
+
+    <div class="progress-label no-print" id="progressLabel">0 of 0 steps done</div>
+    <div class="progress-bar-wrap no-print">
+      <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+    </div>
+
+    <div id="stepContainer"></div>
+
+    <div class="celebrate" id="celebrate">
+      <div class="celebrate-emoji">✨</div>
+      <div class="celebrate-title">Routine Complete</div>
+      <div class="celebrate-sub">Skin is being taken care of. Well done.</div>
+    </div>
+
+    <button class="complete-btn no-print" onclick="resetSteps()">↺ Reset Steps</button>
+  </div>
+
+  <!-- TIMER SCREEN -->
+  <div class="screen" id="screen-timer">
+    <div class="timer-card">
+      <div class="timer-label">Tretinoin Timer</div>
+      <div class="timer-ring">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8"/>
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#c9a96e" stroke-width="8"
+            stroke-dasharray="326.7" stroke-dashoffset="0" stroke-linecap="round" id="timerRing"/>
+        </svg>
+        <div class="timer-ring-text">
+          <div class="timer-ring-mins" id="timerDisplay">02:00</div>
+          <div class="timer-ring-sec">minutes</div>
+        </div>
+      </div>
+      <div class="timer-subtitle" id="timerSubtitle">HA absorption wait</div>
+      <div class="timer-select">
+        <button class="timer-opt active" onclick="setTimer(2, 'HA absorption wait', this)">2 min</button>
+        <button class="timer-opt" onclick="setTimer(20, 'Tretinoin absorption wait', this)">20 min</button>
+        <button class="timer-opt" onclick="setTimer(30, 'Tretinoin absorption wait', this)">30 min</button>
+        <button class="timer-opt" onclick="setTimer(5, 'Pre-peel HA wait', this)">5 min</button>
+      </div>
+      <div class="timer-btns">
+        <button class="timer-btn timer-btn-start" id="timerStartBtn" onclick="toggleTimer()">Start</button>
+        <button class="timer-btn timer-btn-reset" onclick="resetTimer()">Reset</button>
+      </div>
+    </div>
+
+    <div class="app-alert" style="margin:0 4px 12px">
+      <strong>When to use timers:</strong><br>
+      <strong>2 min</strong> — after applying HA before tretinoin · <strong>20–30 min</strong> — after applying tretinoin before next step · <strong>5 min</strong> — after HA before Thursday peel
+    </div>
+
+    <div class="rule-card-app">
+      <h4>Tretinoin Protocol</h4>
+      <ul>
+        <li>Apply HA on damp skin → wait 2 min</li>
+        <li>Apply tretinoin pea-sized amount → wait 20–30 min</li>
+        <li>Never same night as acids or Vitamin C</li>
+        <li>Mon / Wed / Sun spacing only</li>
+        <li>Always sealed with Augustinus Bader</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CLUSTERS SCREEN -->
+  <div class="screen" id="screen-clusters">
+
+    <div class="app-alert">
+      <strong>The Smart Approach:</strong> Use one product per cluster at a time. Finish it completely before opening the next. You never need all products open simultaneously.
+    </div>
+
+    <div class="cluster-card-app">
+      <div class="cluster-head">
+        <div class="cluster-emoji">🧴</div>
+        <div><div class="cluster-head-title">Cluster A — Gentle Cleanser</div><div class="cluster-head-sub">Second cleanse / single cleanse nights</div></div>
+      </div>
+      <div class="cluster-body-app">
+        <div class="product-row"><div class="product-indicator open"></div><div class="product-row-name">CeraVe Hydrating Cleanser</div><div class="product-row-status open">Open Now</div></div>
+        <div class="product-row"><div class="product-indicator next"></div><div class="product-row-name">Skin 1004 Centella Ampoule Foam</div><div class="product-row-status">Next</div></div>
+        <div class="product-row"><div class="product-indicator next"></div><div class="product-row-name">Sunday Riley Ceramic Slip Cleanser</div><div class="product-row-status">After</div></div>
+        <div class="cluster-note">Beauty of Joseon Cleansing Balm is permanent — always your first/oil cleanse and is not part of this cluster.</div>
+      </div>
+    </div>
+
+    <div class="cluster-card-app">
+      <div class="cluster-head">
+        <div class="cluster-emoji">👁️</div>
+        <div><div class="cluster-head-title">Cluster B — Eye Serum</div><div class="cluster-head-sub">Applied before The Inkey List Eye Cream and Eye Wand every AM and PM</div></div>
+      </div>
+      <div class="cluster-body-app">
+        <div class="product-row"><div class="product-indicator open"></div><div class="product-row-name">Dr Levy Intense Stem Cell Eye Concentrate</div><div class="product-row-status open">Open Now</div></div>
+        <div class="product-row"><div class="product-indicator next"></div><div class="product-row-name">Beauty of Joseon Revive Eye Serum</div><div class="product-row-status">Next</div></div>
+        <div class="cluster-note">The Inkey List Brighten-i Eye Cream is a permanent fixture applied over whichever serum is open. When it runs out upgrade to Revision D·E·J Eye Cream or Medik8 Eyerediance — both are stronger options for the eye area at 55.</div>
+      </div>
+    </div>
+
+    <div class="cluster-card-app">
+      <div class="cluster-head">
+        <div class="cluster-emoji">💧</div>
+        <div><div class="cluster-head-title">Cluster C — Recovery Moisturiser</div><div class="cluster-head-sub">Non-Augustinus Bader nights</div></div>
+      </div>
+      <div class="cluster-body-app">
+        <div class="product-row"><div class="product-indicator open"></div><div class="product-row-name">Centellian 24 Madeca Cream Time Reverse</div><div class="product-row-status open">Open Now</div></div>
+        <div class="product-row"><div class="product-indicator next"></div><div class="product-row-name">N7 Future Renew Night Serum + Night Cream</div><div class="product-row-status">Next</div></div>
+        <div class="product-row"><div class="product-indicator next"></div><div class="product-row-name">Cetaphil Daily Moisturiser</div><div class="product-row-status">After</div></div>
+        <div class="cluster-note">Centellian 24 is ideal — centella calms tretinoin skin. Note: Holika Holika Aloe + Cetaphil stay dedicated to Thursday exfoliation night only.</div>
+      </div>
+    </div>
+
+    <div class="cluster-card-app">
+      <div class="cluster-head">
+        <div class="cluster-emoji">✨</div>
+        <div><div class="cluster-head-title">Cluster D — Niacinamide Serum</div><div class="cluster-head-sub">Daily AM brightening and barrier serum</div></div>
+      </div>
+      <div class="cluster-body-app">
+        <div class="product-row"><div class="product-indicator open"></div><div class="product-row-name">Anua Niacinamide 10% + TXA 4%</div><div class="product-row-status open">Primary AM</div></div>
+        <div class="product-row"><div class="product-indicator next"></div><div class="product-row-name">The Ordinary Niacinamide 10% + Zinc 1%</div><div class="product-row-status">Next / Thu reserve</div></div>
+        <div class="cluster-note">Exception: The Ordinary Niacinamide + Zinc is always used on Thursday post-exfoliation regardless of which is open — the zinc is uniquely useful there.</div>
+      </div>
+    </div>
+
+    <div class="cluster-card-app">
+      <div class="cluster-head">
+        <div class="cluster-emoji">☀️</div>
+        <div><div class="cluster-head-title">Cluster E — Outdoor SPF</div><div class="cluster-head-sub">Layered over N7 Day Cream when going outdoors</div></div>
+      </div>
+      <div class="cluster-body-app">
+        <div class="product-row"><div class="product-indicator open"></div><div class="product-row-name">Neutrogena Ultra Sheer SPF 60</div><div class="product-row-status open">Open Now</div></div>
+        <div class="product-row"><div class="product-indicator next"></div><div class="product-row-name">DRMTLGY Tinted Moisturiser SPF 46</div><div class="product-row-status">Next</div></div>
+        <div class="cluster-note">N7 Future Renew Day Cream SPF 40 is always your base layer regardless — these are the top-up outdoor layer only.</div>
+      </div>
+    </div>
+
+    <div class="cluster-card-app">
+      <div class="cluster-head">
+        <div class="cluster-emoji">🍊</div>
+        <div><div class="cluster-head-title">Cluster F — Vitamin C</div><div class="cluster-head-sub">Primary AM antioxidant — always used with Resveratrol + Ferulic</div></div>
+      </div>
+      <div class="cluster-body-app">
+        <div class="product-row"><div class="product-indicator open"></div><div class="product-row-name">Medicube Deep Vitamin C Capsule Cream</div><div class="product-row-status open">Open Now</div></div>
+        <div class="product-row"><div class="product-indicator next"></div><div class="product-row-name">VT Vita-Light Reedle Shot 100</div><div class="product-row-status">Next</div></div>
+        <div class="product-row"><div class="product-indicator next"></div><div class="product-row-name">Paula's Choice C15 Super Booster</div><div class="product-row-status">After — Strongest</div></div>
+        <div class="cluster-note"><strong>Medicube:</strong> Mix with Resveratrol + Ferulic in palm — one combined step. · <strong>VT Vita-Light:</strong> Same — mix with Resveratrol + Ferulic in palm. · <strong>Paula's Choice C15:</strong> Already contains ferulic acid so the morning order changes when you switch to this — apply as: HA → Peptides → Paula's Choice C15 → Resveratrol + Ferulic as standalone → Niacinamide → continue as normal. Paula's Choice is the strongest of the three and uses pH-optimised L-ascorbic acid for maximum skin penetration and collagen synthesis.</div>
+      </div>
+    </div>
+
+    <div class="section-header"><div class="section-header-line"></div><div class="section-header-text">Always In Your Routine</div><div class="section-header-line"></div></div>
+
+    <div class="unique-list">
+      <div class="unique-item"><div class="unique-dot-app"></div><div><div class="unique-name-app">Tretinoin 0.05%</div><div class="unique-why-app">Prescription retinoid — the single most evidence-based anti-aging ingredient. Irreplaceable.</div></div></div>
+      <div class="unique-item"><div class="unique-dot-app"></div><div><div class="unique-name-app">Compounded GHK-Cu 0.3%</div><div class="unique-why-app">Copper peptide serum — collagen cross-linking and wound repair. No equivalent in collection.</div></div></div>
+      <div class="unique-item"><div class="unique-dot-app"></div><div><div class="unique-name-app">Augustinus Bader The Rich Cream</div><div class="unique-why-app">TFC8 technology — unique cellular repair. Used on all tretinoin and needling nights.</div></div></div>
+      <div class="unique-item"><div class="unique-dot-app"></div><div><div class="unique-name-app">Vitamin C [Cluster F]</div><div class="unique-why-app">Primary AM antioxidant and collagen synthesis. Currently Medicube → VT Vita-Light → Paula's Choice C15. See Clusters tab for order change when switching to Paula's Choice.</div></div></div>
+      <div class="unique-item"><div class="unique-dot-app"></div><div><div class="unique-name-app">The Ordinary Resveratrol 3% + Ferulic Acid 3%</div><div class="unique-why-app">Stabilises and amplifies Vitamin C. Always combined together every morning.</div></div></div>
+      <div class="unique-item"><div class="unique-dot-app"></div><div><div class="unique-name-app">The Ordinary Multi-Peptide + HA Serum</div><div class="unique-why-app">11 peptides including Matrixyl 3000 and Argireline — collagen stimulation and expression line reduction.</div></div></div>
+      <div class="unique-item"><div class="unique-dot-app"></div><div><div class="unique-name-app">The Inkey List Brighten-i Eye Cream</div><div class="unique-why-app">Dedicated eye cream — addresses volume loss, collagen and brightness in the eye area. Always over eye serum.</div></div></div>
+      <div class="unique-item"><div class="unique-dot-app"></div><div><div class="unique-name-app">Numbuzin 9+ NAD+ Lifting-sil Essence</div><div class="unique-why-app">NAD+ cellular energy — no other product addresses this pathway.</div></div></div>
+      <div class="unique-item"><div class="unique-dot-app"></div><div><div class="unique-name-app">Emirata DHEA Balancing Cream with Vit A</div><div class="unique-why-app">Addresses hormonal skin thinning at 55 — completely unique function.</div></div></div>
+      <div class="unique-item"><div class="unique-dot-app"></div><div><div class="unique-name-app">VT Reedle Shot 300</div><div class="unique-why-app">Micropoint active delivery — used after tretinoin and post-needling.</div></div></div>
+      <div class="unique-item"><div class="unique-dot-app"></div><div><div class="unique-name-app">The Ordinary HA 2% + B5</div><div class="unique-why-app">Universal daily hydration. First serum every AM and PM on damp skin.</div></div></div>
+      <div class="unique-item"><div class="unique-dot-app"></div><div><div class="unique-name-app">Beauty of Joseon Cleansing Balm</div><div class="unique-why-app">Only product that fully removes SPF and Vitamin C before actives.</div></div></div>
+      <div class="unique-item"><div class="unique-dot-app"></div><div><div class="unique-name-app">Sunday Riley Pink Drink Essence</div><div class="unique-why-app">Firming essence on recovery and deep repair nights.</div></div></div>
+    </div>
+  </div>
+
+  <!-- RULES SCREEN -->
+  <div class="screen" id="screen-rules">
+    <div class="rule-card-app">
+      <h4>⚠️ Ingredient Conflicts — Never Break</h4>
+      <div class="conflict-row"><div class="conflict-x">✕</div><div>GHK-Cu + Vitamin C on the same session — they oxidise each other</div></div>
+      <div class="conflict-row"><div class="conflict-x">✕</div><div>Tretinoin + any acid on the same night</div></div>
+      <div class="conflict-row"><div class="conflict-x">✕</div><div>AHA Peeling Solution + Glycolic Acid on the same night</div></div>
+      <div class="conflict-row"><div class="conflict-x">✕</div><div>Any devices on Thursday post-exfoliation</div></div>
+      <div class="conflict-row"><div class="conflict-x">✕</div><div>LED, acids or Control Pro on microneedling Fridays</div></div>
+      <div class="conflict-row"><div class="conflict-x">✕</div><div>Control Pro without conductive gel applied first</div></div>
+    </div>
+
+    <div class="rule-card-app">
+      <h4>Hyaluronic Acid Rule</h4>
+      <p>Always on damp skin as the very first serum, every AM and PM. HA needs ambient moisture to work — on dry skin it draws moisture out. On tretinoin nights it significantly reduces irritation.</p>
+    </div>
+
+    <div class="rule-card-app">
+      <h4>Vitamin C Rules</h4>
+      <ul>
+        <li>Morning only — works synergistically with SPF for photoprotection</li>
+        <li>Mix Resveratrol drops into Vit C in palm before applying</li>
+        <li>Store in fridge — oxidises at room temperature</li>
+        <li>Never at night before tretinoin</li>
+        <li>Never same session as GHK-Cu</li>
+      </ul>
+    </div>
+
+    <div class="rule-card-app">
+      <h4>Device Rules — 4-3 Split</h4>
+      <ul>
+        <li><strong>LED nights (4)</strong> — Mon / Tue / Thu (no, exfoliation) — corrected: Mon / Tue / Fri / Sat · Always first after cleansing on bare skin</li>
+        <li><strong>Control Pro nights (3)</strong> — Wed / Fri (needling only) / Sun · Always with conductive gel, always last step</li>
+        <li><strong>Eye Wand</strong> — every AM + PM, 2 min each eye over eye cream</li>
+        <li><strong>Dennis Gross LED</strong> — Mon / Tue / Sat, red 10–15 min, bare skin after cleanse</li>
+        <li><strong>Project E LED face + neck</strong> — Fri (non-needling), red + NIR 15 min, bare skin</li>
+        <li><strong>Derma Roller 1mm</strong> — every 2–3 Fridays, clean with 70% alcohol, no LED same night</li>
+      </ul>
+    </div>
+
+    <div class="rule-card-app">
+      <h4>Storage</h4>
+      <ul>
+        <li><strong>Fridge:</strong> Medicube Vit C, Numbuzin NAD+, Dr Levy Freezing Mask</li>
+        <li><strong>Away from light:</strong> Tretinoin, GHK-Cu Serum</li>
+        <li><strong>Separate:</strong> GHK-Cu away from all Vitamin C products always</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav no-print">
+  <button class="nav-item active" id="nav-today" onclick="showScreen('today')">
+    <div class="nav-icon">📋</div>
+    <div class="nav-label">Today</div>
+  </button>
+  <button class="nav-item" id="nav-timer" onclick="showScreen('timer')">
+    <div class="nav-icon">⏱️</div>
+    <div class="nav-label">Timer</div>
+  </button>
+  <button class="nav-item" id="nav-clusters" onclick="showScreen('clusters')">
+    <div class="nav-icon">🗂️</div>
+    <div class="nav-label">Clusters</div>
+  </button>
+  <button class="nav-item" id="nav-rules" onclick="showScreen('rules')">
+    <div class="nav-icon">📖</div>
+    <div class="nav-label">Rules</div>
+  </button>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const DAY_THEMES = {
+  0: { theme: 'Tretinoin + Control Pro', flags: ['tret'] },
+  1: { theme: 'Tretinoin + Copper + LED', flags: ['tret','led'] },
+  2: { theme: 'Recovery + LED', flags: ['led'] },
+  3: { theme: 'Tretinoin + DHEA + Control Pro', flags: ['tret'] },
+  4: { theme: 'Exfoliation Night', flags: ['acid'] },
+  5: { theme: 'GHK-Cu + LED', flags: ['led'] },
+  6: { theme: 'Deep Repair + LED', flags: ['led'] }
+};
+
+const AM_STEPS = [
+  { n:'1', name:'Gentle Cleanser [Cluster A]', note:'CeraVe / Skin 1004 / Ceramic Slip. Mon/Wed/Fri: swap for COSRX Salicylic Cleanser — 60 sec hold.', tag:'cluster' },
+  { n:'2', name:'The Ordinary HA 2% + B5', note:'Apply immediately on DAMP skin. Always first serum every AM and PM.', tag:'key' },
+  { n:'3', name:'The Ordinary Multi-Peptide + HA Serum', note:'11 peptides including Matrixyl 3000 and Argireline. Apply after HA, before Vitamin C.' },
+  { n:'4', name:'Medicube Vit C Capsule Cream + Resveratrol 3% + Ferulic 3%', note:'Mix both together in palm before applying. Vitamin C + Resveratrol + Ferulic always as one combined step.', tag:'key' },
+  { n:'5', name:'Numbuzin 9+ NAD+ Lifting-sil Essence', note:'Cellular energy and firming.' },
+  { n:'6', name:'Anua Niacinamide 10% + TXA 4% [Cluster D]', note:'Primary AM brightening serum.', tag:'cluster' },
+  { n:'7', name:'Eye Serum [Cluster B]', note:'Current open eye serum — Dr Levy Concentrate or Beauty of Joseon Eye Serum.' },
+  { n:'8', name:'The Inkey List Brighten-i Eye Cream', note:'Apply over eye serum around full orbital bone. Addresses volume loss and collagen in eye area.' },
+  { n:'9', name:'Dr Levy Eye Wand', note:'Use over eye cream — 2 min each eye, outward/upward motions.', tag:'device' },
+  { n:'10', name:'N7 Future Renew Day Cream SPF 40', note:'Always the base moisturiser layer.' },
+  { n:'11', name:'SPF [Cluster E] if outdoors', note:'Neutrogena Ultra Sheer SPF 60 or DRMTLGY Tinted SPF 46 over N7.', tag:'cluster' }
+];
+
+const PM_STEPS = {
+  0: [ // Sunday — Tretinoin + Control Pro
+    { n:'1', name:'CeraVe Hydrating Cleanser', note:'Single gentle cleanse — Sunday is rest night.' },
+    { n:'2', name:'Dr Dennis Gross LED Mask — RED light', note:'On bare clean skin for maximum light penetration. 10 min.', tag:'device' },
+    { n:'3', name:'The Ordinary HA 2% + B5', note:'DAMP skin — tretinoin buffer.', tag:'key' },
+    { n:'4', name:'⏱ Wait 2 minutes', note:'Let HA fully absorb before tretinoin.', tag:'wait', timer:2 },
+    { n:'5', name:'Tretinoin 0.05%', note:'Pea-sized amount, full face.', tag:'tret' },
+    { n:'6', name:'⏱ Wait 20–30 minutes', note:'Non-negotiable. Reduces irritation with no efficacy loss.', tag:'wait', timer:20 },
+    { n:'7', name:'The Ordinary Multi-Peptide + HA Serum', note:'After tretinoin absorbed.' },
+    { n:'8', name:'Recovery Moisturiser [Cluster C]', note:'Centellian 24 Madeca Cream ideal — centella calms tretinoin skin.', tag:'cluster' },
+    { n:'9', name:'Eye Serum [Cluster B]', note:'Current open eye serum.' },
+    { n:'10', name:'The Inkey List Brighten-i Eye Cream', note:'Apply over eye serum.' },
+    { n:'11', name:'Dr Levy Eye Wand', note:'2 min each eye over eye cream.', tag:'device' },
+    { n:'12', name:'Augustinus Bader The Rich Cream', note:'Seal and repair overnight.' },
+    { n:'13', name:'Dr Levy Control Pro Conductive Gel', note:'Apply across full face. Essential before Control Pro.', tag:'req' },
+    { n:'14', name:'Dr Levy The Control Pro', note:'Full face microcurrent/EMS — 5–10 min. Wipe gel off after.', tag:'device' }
+  ],
+  1: [ // Monday — Tretinoin + Copper + LED
+    { n:'1', name:'Beauty of Joseon Cleansing Balm', note:'First cleanse — removes SPF and Vitamin C fully.' },
+    { n:'2', name:'Gentle Cleanser [Cluster A]', note:'Second cleanse.', tag:'cluster' },
+    { n:'3', name:'Dr Dennis Gross LED Mask — RED light', note:'On bare clean skin for maximum penetration. 10 min.', tag:'device' },
+    { n:'4', name:'The Ordinary HA 2% + B5', note:'DAMP skin — buffers tretinoin irritation.', tag:'key' },
+    { n:'5', name:'⏱ Wait 2 minutes', note:'Let HA absorb before tretinoin.', tag:'wait', timer:2 },
+    { n:'6', name:'Tretinoin 0.05%', note:'Pea-sized amount, full face.', tag:'tret' },
+    { n:'7', name:'⏱ Wait 20–30 minutes', note:'Non-negotiable.', tag:'wait', timer:20 },
+    { n:'8', name:'VT Reedle Shot 300', note:'Micropoint delivery system.' },
+    { n:'9', name:'Compounded GHK-Cu 0.3% Serum', note:'Safe after tretinoin absorbed. Never with Vitamin C.' },
+    { n:'10', name:'The Ordinary Multi-Peptide + HA Serum', note:'After copper peptides.' },
+    { n:'11', name:'Eye Serum [Cluster B]', note:'Current open eye serum.' },
+    { n:'12', name:'The Inkey List Brighten-i Eye Cream', note:'Apply over eye serum.' },
+    { n:'13', name:'Dr Levy Eye Wand', note:'2 min each eye over eye cream.', tag:'device' },
+    { n:'14', name:'Augustinus Bader The Rich Cream', note:'Best choice for tretinoin nights.' }
+  ],
+  2: [ // Tuesday — Recovery + LED
+    { n:'1', name:'Gentle Cleanser [Cluster A]', note:'Single cleanse tonight.', tag:'cluster' },
+    { n:'2', name:'Dr Dennis Gross LED Mask — RED light', note:'On bare clean skin for maximum penetration. 10 min.', tag:'device' },
+    { n:'3', name:'The Ordinary HA 2% + B5', note:'DAMP skin — first serum always.' },
+    { n:'4', name:'Medicube Deep Vitamin C Daily Quick Mask', note:'10 minutes, rinse off.' },
+    { n:'5', name:'Sunday Riley Pink Drink Firming Essence', note:'Hydrating and firming.' },
+    { n:'6', name:'Numbuzin 9+ NAD+ Lifting-sil Essence', note:'' },
+    { n:'7', name:'The Ordinary Multi-Peptide + HA Serum', note:'' },
+    { n:'8', name:'Eye Serum [Cluster B]', note:'Current open eye serum.' },
+    { n:'9', name:'The Inkey List Brighten-i Eye Cream', note:'Apply over eye serum.' },
+    { n:'10', name:'Dr Levy Eye Wand', note:'2 min each eye over eye cream.', tag:'device' },
+    { n:'11', name:'Dr Levy Freezing Anti-Fatigue Mask', note:'15–20 min, leave on.' },
+    { n:'12', name:'Recovery Moisturiser [Cluster C]', note:'Current open product.', tag:'cluster' }
+  ],
+  3: [ // Wednesday — Tretinoin + DHEA + Control Pro
+    { n:'1', name:'Beauty of Joseon Cleansing Balm', note:'First cleanse.' },
+    { n:'2', name:'Gentle Cleanser [Cluster A]', note:'Second cleanse.', tag:'cluster' },
+    { n:'3', name:'The Ordinary HA 2% + B5', note:'DAMP skin — tretinoin buffer.', tag:'key' },
+    { n:'4', name:'⏱ Wait 2 minutes', note:'Let HA absorb.', tag:'wait', timer:2 },
+    { n:'5', name:'Tretinoin 0.05%', note:'Pea-sized amount, full face.', tag:'tret' },
+    { n:'6', name:'⏱ Wait 20–30 minutes', note:'Non-negotiable.', tag:'wait', timer:20 },
+    { n:'7', name:'VT Reedle Shot 300', note:'After tretinoin absorbed.' },
+    { n:'8', name:'Emirata DHEA Balancing Cream with Vit A', note:'Hormonal skin thinning support. Apply sparingly.' },
+    { n:'9', name:'The Ordinary Multi-Peptide + HA Serum', note:'' },
+    { n:'10', name:'Eye Serum [Cluster B]', note:'Current open eye serum.' },
+    { n:'11', name:'The Inkey List Brighten-i Eye Cream', note:'Apply over eye serum.' },
+    { n:'12', name:'Dr Levy Eye Wand', note:'2 min each eye over eye cream.', tag:'device' },
+    { n:'13', name:'Recovery Moisturiser [Cluster C]', note:'N7 Night Serum + Cream or current open product.', tag:'cluster' },
+    { n:'14', name:'Dr Levy Control Pro Conductive Gel', note:'Apply across full face. Essential before Control Pro.', tag:'req' },
+    { n:'15', name:'Dr Levy The Control Pro', note:'5–10 min. Wipe gel off and reapply moisturiser.', tag:'device' }
+  ],
+  4: [ // Thursday — Exfoliation (no devices)
+    { n:'1', name:'COSRX Salicylic Acid Cleanser', note:'60 second hold — BHA pre-treatment.' },
+    { n:'2', name:'The Ordinary HA 2% + B5', note:'DAMP skin — apply BEFORE the peel to buffer.', tag:'key' },
+    { n:'3', name:'⏱ Wait 5 minutes', note:'Let HA fully absorb before acid.', tag:'wait', timer:5 },
+    { n:'4a', name:'WEEK A — Peeling Solution AHA 30% + BHA 2%', note:'10 minutes MAX. Rinse thoroughly.' },
+    { n:'4b', name:'WEEK B — Glycolic Acid Toner', note:'Gentle swipe, leave on. Never combine with Peeling Solution.' },
+    { n:'5', name:'The Ordinary Niacinamide 10% + Zinc 1%', note:'Post-acid calming. Zinc controls exfoliation congestion.' },
+    { n:'6', name:'Numbuzin 9+ NAD+ Lifting-sil Essence', note:'' },
+    { n:'7', name:'Eye Serum [Cluster B]', note:'No Eye Wand tonight — skin sensitised.' },
+    { n:'8', name:'The Inkey List Brighten-i Eye Cream', note:'Gentle application only.' },
+    { n:'9', name:'Holika Holika 99% Aloe Soothing Gel', note:'First moisturiser — anti-inflammatory on exfoliated skin.' },
+    { n:'10', name:'Cetaphil Daily Moisturiser', note:'Seal over aloe.' },
+    { n:'⛔', name:'No Devices Tonight', note:'Skin sensitised post-exfoliation. No microcurrent, EMS or LED.' }
+  ],
+  5: [ // Friday — GHK-Cu + LED (non-needling) / Control Pro (needling)
+    { n:'1', name:'Gentle Cleanser [Cluster A]', note:'(Routine B — non-needling Fridays)', tag:'cluster' },
+    { n:'2', name:'Project E LED Mask — Face + Neck', note:'On bare clean skin. RED + Near-Infrared, 15 min. Priority LED night — neck coverage.', tag:'device' },
+    { n:'3', name:'The Ordinary HA 2% + B5', note:'DAMP skin.' },
+    { n:'4', name:'VT Reedle Shot 300', note:'' },
+    { n:'5', name:'Compounded GHK-Cu 0.3% Serum', note:'' },
+    { n:'6', name:'The Ordinary Multi-Peptide + HA Serum', note:'' },
+    { n:'7', name:'Numbuzin 9+ NAD+ Lifting-sil Essence', note:'' },
+    { n:'8', name:'Emirata DHEA Balancing Cream with Vit A', note:'Hormonal support.' },
+    { n:'9', name:'Eye Serum [Cluster B]', note:'Current open eye serum.' },
+    { n:'10', name:'The Inkey List Brighten-i Eye Cream', note:'Apply over eye serum.' },
+    { n:'11', name:'Dr Levy Eye Wand', note:'2 min each eye over eye cream.', tag:'device' },
+    { n:'12', name:'Augustinus Bader The Rich Cream', note:'' }
+  ],
+  6: [ // Saturday — Deep Repair + LED
+    { n:'1', name:'Beauty of Joseon Cleansing Balm', note:'First cleanse.' },
+    { n:'2', name:'Gentle Cleanser [Cluster A]', note:'Second cleanse.', tag:'cluster' },
+    { n:'3', name:'Dr Dennis Gross LED Mask — RED light', note:'On bare clean skin. 10–15 min. BLUE only if congestion present.', tag:'device' },
+    { n:'4', name:'The Ordinary HA 2% + B5', note:'DAMP skin.' },
+    { n:'5', name:'Sunday Riley Pink Drink Firming Essence', note:'' },
+    { n:'6', name:'Numbuzin 9+ NAD+ Lifting-sil Essence', note:'' },
+    { n:'7', name:'Compounded GHK-Cu 0.3% Serum', note:'' },
+    { n:'8', name:'The Ordinary Multi-Peptide + HA Serum', note:'' },
+    { n:'9', name:'Eye Serum [Cluster B]', note:'Current open eye serum.' },
+    { n:'10', name:'The Inkey List Brighten-i Eye Cream', note:'Apply over eye serum.' },
+    { n:'11', name:'Dr Levy Eye Wand', note:'2 min each eye over eye cream.', tag:'device' },
+    { n:'12', name:'Augustinus Bader The Rich Cream', note:'' }
+  ]
+};
+
+// ─── STATE ───────────────────────────────────────────────
+let currentDay = new Date().getDay();
+let currentAMPM = 'am';
+let doneSteps = {};
+let timerSeconds = 120;
+let timerMax = 120;
+let timerRunning = false;
+let timerInterval = null;
+let timerLabelText = 'HA absorption wait';
+
+// ─── INIT ────────────────────────────────────────────────
+function init() {
+  updateClock();
+  setInterval(updateClock, 1000);
+  buildDayStrip();
+  renderSteps();
+}
+
+function updateClock() {
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  document.getElementById('statusTime').textContent = `${h}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+function buildDayStrip() {
+  const strip = document.getElementById('dayStrip');
+  strip.innerHTML = '';
+  DAYS.forEach((d, i) => {
+    const info = DAY_THEMES[i];
+    const el = document.createElement('div');
+    el.className = 'day-pill' + (i === currentDay ? ' active' : '') +
+      (info.flags.includes('tret') ? ' has-tret' : '') +
+      (info.flags.includes('led') ? ' has-led' : '') +
+      (info.flags.includes('acid') ? ' has-acid' : '');
+    el.innerHTML = `<span class="day-pill-name">${d}</span><div class="day-pill-dot"></div>`;
+    el.onclick = () => { currentDay = i; doneSteps = {}; buildDayStrip(); renderSteps(); };
+    strip.appendChild(el);
+  });
+}
+
+function switchAMPM(mode) {
+  currentAMPM = mode;
+  doneSteps = {};
+  document.getElementById('amBtn').classList.toggle('active', mode === 'am');
+  document.getElementById('pmBtn').classList.toggle('active', mode === 'pm');
+  renderSteps();
+}
+
+function getSteps() {
+  return currentAMPM === 'am' ? AM_STEPS : (PM_STEPS[currentDay] || []);
+}
+
+function renderSteps() {
+  const steps = getSteps();
+  const container = document.getElementById('stepContainer');
+  const celebrate = document.getElementById('celebrate');
+  celebrate.classList.remove('show');
+
+  const sectionLabel = currentAMPM === 'am'
+    ? `☀️ Morning — ${DAYS[currentDay]}`
+    : `🌙 Evening — ${DAYS[currentDay]} · ${DAY_THEMES[currentDay].theme}`;
+
+  let html = `<div class="today-card">
+    <div class="today-card-header">
+      <div class="today-card-title">${sectionLabel}</div>
+    </div>
+    <div class="step-list">`;
+
+  steps.forEach((s, i) => {
+    const done = doneSteps[i];
+    const tagMap = { tret:'tag-tret', device:'tag-device', wait:'tag-wait', key:'tag-key', req:'tag-req', cluster:'tag-cluster' };
+    const tagClass = tagMap[s.tag] || '';
+    const tagLabels = { tret:'Tretinoin', device:'Device', wait:'Wait ⏱', key:'Key Step', req:'Required', cluster:'Cluster' };
+    const tagLabel = tagLabels[s.tag] || '';
+
+    const hasTimer = s.timer;
+    html += `<div class="step-card${done ? ' done' : ''}" onclick="toggleStep(${i})">
+      <div class="step-check">
+        <span class="step-num-inner">${s.n}</span>
+        <span class="step-check-inner">✓</span>
+      </div>
+      <div class="step-content">
+        <div class="step-name">${s.name}</div>
+        ${s.note ? `<div class="step-note">${s.note}</div>` : ''}
+        ${hasTimer ? `<button class="timer-btn timer-btn-start" style="margin-top:8px;padding:6px 14px;font-size:10px;" onclick="event.stopPropagation();quickTimer(${s.timer},'${s.name}')">⏱ Start ${s.timer} min timer</button>` : ''}
+      </div>
+      ${tagClass ? `<div class="step-tag ${tagClass}">${tagLabel}</div>` : ''}
+    </div>`;
+  });
+
+  html += '</div></div>';
+  container.innerHTML = html;
+  updateProgress();
+}
+
+function toggleStep(i) {
+  doneSteps[i] = !doneSteps[i];
+  renderSteps();
+  const steps = getSteps();
+  const allDone = steps.every((_, idx) => doneSteps[idx]);
+  if (allDone) {
+    setTimeout(() => document.getElementById('celebrate').classList.add('show'), 300);
+  }
+}
+
+function resetSteps() {
+  doneSteps = {};
+  document.getElementById('celebrate').classList.remove('show');
+  renderSteps();
+}
+
+function updateProgress() {
+  const steps = getSteps();
+  const done = steps.filter((_, i) => doneSteps[i]).length;
+  const total = steps.length;
+  const pct = total ? (done / total * 100) : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${done} of ${total} steps done`;
+}
+
+// ─── SCREEN NAVIGATION ────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ─── TIMER ────────────────────────────────────────────────
+function setTimer(mins, label, btn) {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSeconds = mins * 60;
+  timerMax = mins * 60;
+  timerLabelText = label;
+  document.getElementById('timerSubtitle').textContent = label;
+  document.getElementById('timerStartBtn').textContent = 'Start';
+  updateTimerDisplay();
+  document.querySelectorAll('.timer-opt').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+function quickTimer(mins, label) {
+  showScreen('timer');
+  setTimer(mins, label, null);
+  document.querySelectorAll('.timer-opt').forEach(b => {
+    if (parseInt(b.textContent) === mins) b.classList.add('active');
+    else b.classList.remove('active');
+  });
+}
+
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timerStartBtn').textContent = 'Resume';
+  } else {
+    if (timerSeconds <= 0) { resetTimer(); return; }
+    timerRunning = true;
+    document.getElementById('timerStartBtn').textContent = 'Pause';
+    timerInterval = setInterval(() => {
+      timerSeconds--;
+      updateTimerDisplay();
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('timerStartBtn').textContent = 'Done ✓';
+        document.getElementById('timerSubtitle').textContent = '✨ Time is up!';
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSeconds = timerMax;
+  document.getElementById('timerStartBtn').textContent = 'Start';
+  document.getElementById('timerSubtitle').textContent = timerLabelText;
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  document.getElementById('timerDisplay').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const circumference = 326.7;
+  const progress = timerSeconds / timerMax;
+  const offset = circumference * (1 - progress);
+  document.getElementById('timerRing').style.strokeDashoffset = offset;
+}
+
+init();
+</script>
+</body>
+</html>
